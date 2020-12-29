@@ -30,8 +30,7 @@ namespace Blazor_SignalR_Test.Server.Controllers
         {
             Console.WriteLine("Called new function");
             await userHubService.UpdateUserState(id, Shared.UserStatus.Offline);
-            List<AppUser> Users = await userHubService.GetAllAppUsersAsync();
-            await _hub.Clients.All.SendAsync("receiveUserStatus", Users);
+            await userHubService.GetUserStatus();
             return Ok();
         }
     }
