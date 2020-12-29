@@ -1,0 +1,25 @@
+@inject Client.Services.IServices.IChatService _ChatService
+@inject Client.Services.IServices.ICoinDataService _CoinService
+@inject Client.Services.IServices.IUserService _UserService
+
+<Router AppAssembly="@typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+    </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p>Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+@code {
+
+    //Initializing all the services with the correct hub connections
+    protected override async Task OnInitializedAsync()
+    {
+        await _ChatService.Init();
+        await _CoinService.Init();
+        await _UserService.Init();
+    }
+
+}

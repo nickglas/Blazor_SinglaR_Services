@@ -1,0 +1,45 @@
+﻿@page "/system_statusses"
+@inject Client.Services.IServices.ICoinDataService _coinservice
+
+<h3>System Status page</h3>
+<button class="btn btn-primary" @onclick="RefreshApiStatus">Check for updates</button>
+<button class="btn btn-primary" @onclick="StartThread">Start thread</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Api title</th>
+            <th scope="col">Api description</th>
+            <th scope="col">Api url</th>
+            <th scope="col">Last checked</th>
+            <th scope="col">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var status in _coinservice.Statusses)
+        {
+            <tr>
+                <td>@status.Api_Title</td>
+                <td>@status.Api_Description</td>
+                <td>@status.Api_Url</td>
+                <td>@status.Last_Checked</td>
+                <td>@status.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    protected override void OnInitialized()
+    {
+        _coinservice.StatussesOnChange += StateHasChanged;
+    }
+    private async Task RefreshApiStatus()
+    {
+        await _coinservice.GetApiStatusses();
+    }
+    private async Task StartThread()
+    {
+        await _coinservice.StartThread();
+    }
+}

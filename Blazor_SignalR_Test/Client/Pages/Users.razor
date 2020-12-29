@@ -1,0 +1,39 @@
+﻿@page "/users"
+@inject Client.Services.IServices.IUserService _userService
+
+<h3>Users</h3>
+<button class="btn btn-primary" @onclick="GetUsers">Check for updates</button>
+<button class="btn btn-primary" @onclick="SetAllOffline">set offline</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var status in _userService.Users)
+        {
+            <tr>
+                <td>@status.UserName</td>
+                <td>@status.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    protected override void OnInitialized()
+    {
+        _userService.StatussesOnChange += StateHasChanged;
+    }
+    public async Task GetUsers()
+    {
+        await _userService.GetAppUsers();
+    }
+    public async Task SetAllOffline()
+    {
+        await _userService.SetAllOffline();
+    }
+}
