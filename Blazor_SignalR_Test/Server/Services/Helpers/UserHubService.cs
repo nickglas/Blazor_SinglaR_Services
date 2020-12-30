@@ -39,6 +39,7 @@ namespace Blazor_SignalR_Test.Server.Services.Helpers
         }
         public async Task GetUserStatus()
         {
+            Console.WriteLine("Sending user statusses!");
             List<AppUser> appUsers = await _context.AppUsers.ToListAsync();
             await _hub.Clients.All.SendAsync("receiveUserStatus", appUsers);
         }

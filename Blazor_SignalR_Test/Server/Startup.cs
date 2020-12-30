@@ -17,6 +17,8 @@ using Blazor_SignalR_Test.Server.Services.Helpers;
 using Blazor_SignalR_Test.Shared;
 using System;
 using Blazor_SignalR_Test.Client.Services.IServices;
+using Microsoft.AspNetCore.SignalR;
+using Blazor_SignalR_Test.Server.Controllers;
 
 namespace Blazor_SignalR_Test.Server
 {
@@ -53,11 +55,21 @@ namespace Blazor_SignalR_Test.Server
 
             services.AddScoped<IStartupService, StartupService>();
             services.AddScoped<IUserHubService, UserHubService>();
+            services.AddScoped<IUtilityService, UtilityService>();
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext _context, IStartupService startupService)
+        public void Configure(
+            DataContext _context,
+            UserManager<AppUser> userManager,
+            IApplicationBuilder app, 
+            IWebHostEnvironment env, 
+            IStartupService startupService,
+            IUtilityService utilityService,
+            IHubContext<UserHub> userhub,
+            IUserService userService
+            )
         {
             //_context.Database.EnsureCreatedAsync().Wait();
             app.UseResponseCompression();
@@ -92,10 +104,12 @@ namespace Blazor_SignalR_Test.Server
 
             try
             {
+                utilityService.PrintText("[STARTUP LOGS]",false,ConsoleColor.Green);
                 startupService.CheckDBConnection().Wait();
                 startupService.CreateDatabaseIfNotExist().Wait();
                 startupService.InitializeSystemRoles().Wait();
                 startupService.InitializeSystemUsers().Wait();
+                utilityService.PrintText("[END OF LOGS]",true,ConsoleColor.Green);
             }
             catch (Exception err)
             {
@@ -117,7 +131,8 @@ namespace Blazor_SignalR_Test.Server
                     Environment.Exit(-1);
                 }
             }
-        
+            
+            //Thread thread = new Thread(new ThreadStart(Test));
         }
         
     }

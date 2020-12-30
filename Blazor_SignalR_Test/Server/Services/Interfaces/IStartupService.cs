@@ -7,6 +7,7 @@ namespace Blazor_SignalR_Test.Server.Services.Interfaces
 {
     public interface IStartupService
     {
+        void PrintStartupText(string text, bool ExtraWhiteLine);
         Task InitializeSystemUsers();
         Task InitializeSystemRoles();
         Task CreateDatabaseIfNotExist();

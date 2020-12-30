@@ -11,6 +11,8 @@ namespace Blazor_SignalR_Test.Server.Services.Helpers
 {
     public class StartupService : IStartupService
     {
+        private readonly IUtilityService utilityService;
+
         public DataContext AppContext { get; }
         public UserManager<AppUser> UserManager { get; }
         public RoleManager<AppRole> RoleManager { get; }
@@ -19,12 +21,14 @@ namespace Blazor_SignalR_Test.Server.Services.Helpers
         public StartupService(DataContext appContext,
                               UserManager<AppUser> userManager,
                               RoleManager<AppRole> roleManager,
-                              SignInManager<AppUser> signInManager)
+                              SignInManager<AppUser> signInManager,
+                              IUtilityService utilityService)
         {
             AppContext = appContext;
             UserManager = userManager;
             RoleManager = roleManager;
             SignInManager = signInManager;
+            this.utilityService = utilityService;
         }
 
         public async Task InitializeSystemRoles()
@@ -32,6 +36,15 @@ namespace Blazor_SignalR_Test.Server.Services.Helpers
 
             List<AppRole> DefaultRoles = AppRole.GetDefaultRoles();
             Console.WriteLine($"Checking system roles... roles loaded: {DefaultRoles.Count}");
+
+            foreach (var dr in DefaultRoles)
+            {
+                Console.Write("Loaded default role: ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(dr.Name + "\n");
+                Console.ResetColor();
+            }
+
             foreach (var role in DefaultRoles)
             {
                 if (await RoleManager.FindByNameAsync(role.Name) == null)
@@ -42,13 +55,25 @@ namespace Blazor_SignalR_Test.Server.Services.Helpers
                     await RoleManager.CreateAsync(role);
                     Console.ResetColor();
                 }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"User {role.Name} already exists in the database");
+                    Console.ResetColor();
+                }
             }
         }
         public async Task InitializeSystemUsers()
         {
             List<AppUser> DefaultUsers = AppUser.GetDefaultUsers();
             Console.WriteLine($"Checking system users... roles loaded: {DefaultUsers.Count}");
-
+            foreach (var dr in DefaultUsers)
+            {
+                Console.Write("Loaded default user: ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(dr.UserName + "\n");
+                Console.ResetColor();
+            }
             foreach (var user in DefaultUsers)
             {
                 if (await UserManager.FindByEmailAsync(user.Email) == null)
@@ -60,29 +85,58 @@ namespace Blazor_SignalR_Test.Server.Services.Helpers
                     await UserManager.AddToRoleAsync(user, "Admin");
                     Console.ResetColor();
                 }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"User {user.UserName} already exists in the database");
+                    Console.ResetColor();
+                }
             }
 
         }
 
         public async Task CreateDatabaseIfNotExist()
         {
-            await AppContext.Database.EnsureCreatedAsync();
-        }
-
-        public async Task CheckDBConnection()
-        {
-            if (await AppContext.Database.CanConnectAsync())
+            Console.Write("Does database already exists? ");
+            if (!await AppContext.Database.EnsureCreatedAsync())
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Succesfully connected to the database");
-                Console.ResetColor();
+                Console.Write("YES!");
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Failed to connect to the database");
-                Console.ResetColor();
+                Console.Write("NO! Creating...");
+            }
+            Console.WriteLine();
+            Console.ResetColor();
+        }
+
+        public async Task CheckDBConnection()
+        {
+            Console.Write("Connected to database? ");
+            if (await AppContext.Database.CanConnectAsync())
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("YES!");
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("NO!");
+            }
+            Console.WriteLine();
+            Console.ResetColor();
+        }
+
+        public void PrintStartupText(string text, bool ExtraWhiteLine)
+        {
+            Console.WriteLine(text);
+            if (ExtraWhiteLine)
+            {
+                Console.WriteLine();
             }
         }
+        
     }
 }
