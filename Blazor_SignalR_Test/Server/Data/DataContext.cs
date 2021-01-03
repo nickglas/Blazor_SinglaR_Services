@@ -21,6 +21,7 @@ namespace Blazor_SignalR_Test.Server.Data
 
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<AppRole> AppRoles { get; set; }
+        public DbSet<Coin> Coins { get; set; }
 
     }
 }

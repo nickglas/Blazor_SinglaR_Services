@@ -56,7 +56,7 @@ namespace Blazor_SignalR_Test.Server
             services.AddScoped<IStartupService, StartupService>();
             services.AddScoped<IUserHubService, UserHubService>();
             services.AddScoped<IUtilityService, UtilityService>();
-
+            services.AddScoped<ICoinHubService, CoinHubService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,8 +67,7 @@ namespace Blazor_SignalR_Test.Server
             IWebHostEnvironment env, 
             IStartupService startupService,
             IUtilityService utilityService,
-            IHubContext<UserHub> userhub,
-            IUserService userService
+            IHubContext<UserHub> userhub
             )
         {
             //_context.Database.EnsureCreatedAsync().Wait();
@@ -109,6 +108,7 @@ namespace Blazor_SignalR_Test.Server
                 startupService.CreateDatabaseIfNotExist().Wait();
                 startupService.InitializeSystemRoles().Wait();
                 startupService.InitializeSystemUsers().Wait();
+                startupService.InitializeDefaultCoinsAsync().Wait();
                 utilityService.PrintText("[END OF LOGS]",true,ConsoleColor.Green);
             }
             catch (Exception err)

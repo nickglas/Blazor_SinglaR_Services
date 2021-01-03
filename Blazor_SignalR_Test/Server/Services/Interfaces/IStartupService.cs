@@ -10,6 +10,7 @@ namespace Blazor_SignalR_Test.Server.Services.Interfaces
         void PrintStartupText(string text, bool ExtraWhiteLine);
         Task InitializeSystemUsers();
         Task InitializeSystemRoles();
+        Task InitializeDefaultCoinsAsync();
         Task CreateDatabaseIfNotExist();
         Task CheckDBConnection();
     }

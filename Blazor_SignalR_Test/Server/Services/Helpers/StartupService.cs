@@ -2,9 +2,12 @@
 using Blazor_SignalR_Test.Server.Services.Interfaces;
 using Blazor_SignalR_Test.Shared;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace Blazor_SignalR_Test.Server.Services.Helpers
@@ -137,6 +140,41 @@ namespace Blazor_SignalR_Test.Server.Services.Helpers
                 Console.WriteLine();
             }
         }
-        
+
+        public async Task InitializeDefaultCoinsAsync()
+        {
+            utilityService.PrintText("Getting coins from external api");
+            List<Coin> UpdatedList = new List<Coin>();
+            using (var client = new HttpClient())
+            {
+
+                client.BaseAddress = new Uri("https://api.coingecko.com/api/v3/coins/list");
+
+                // Add an Accept header for JSON format.
+                client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+
+                // List data response.
+                HttpResponseMessage response = client.GetAsync("").Result;  // Blocking call! Program will wait here until a response is received or a timeout occurs.
+                if (response.IsSuccessStatusCode)
+                {
+                    string test = await response.Content.ReadAsStringAsync();
+                    dynamic stuff = JsonConvert.DeserializeObject(test);
+
+                        
+                }
+                else
+                {
+                    
+                }
+
+            }
+        }
+
+        public Task LoadAllCoinsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

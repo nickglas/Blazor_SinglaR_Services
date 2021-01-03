@@ -1,4 +1,5 @@
 ﻿using Blazor_SignalR_Test.Client.Services.IServices;
+using Blazor_SignalR_Test.Server.Services.Interfaces;
 using Blazor_SignalR_Test.Shared;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -13,13 +14,12 @@ namespace Blazor_SignalR_Test.Server.Hubs
 {
     public class CoinHub : Hub
     {
-        private readonly IUserService userService;
+        private readonly ICoinHubService coinHub;
 
-        public CoinHub(IUserService userService)
+        public CoinHub(ICoinHubService coinHub)
         {
-            this.userService = userService;
+            this.coinHub = coinHub;
         }
-
         public async Task CheckApi()
         {
             List<Api> BaseData = Api.GetBaseApi();
@@ -31,6 +31,25 @@ namespace Blazor_SignalR_Test.Server.Hubs
             await Clients.All.SendAsync("ReceiveApiStatus", UpdatedData);
 
         }
+
+        public async Task AddCoinAsync(Coin data)
+        {
+
+        }
+        public async Task RemoveCoinAsync(int id)
+        {
+
+        }
+        public async Task GetAllCoinsAsync()
+        {
+
+        }
+        public async Task RemoveAllCoinsAsync()
+        {
+
+        }
+
+
         private List<Api> CheckApiStatus(List<Api>Api_to_check)
         {
             List<Api> UpdatedList = new List<Api>();
