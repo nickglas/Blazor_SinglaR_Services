@@ -12,6 +12,7 @@ namespace Blazor_SignalR_Test.Server.Services.Interfaces
 
         void PrintText(string text, bool ExtraWhiteLine);
         void PrintText(string text, bool ExtraWhiteLine, ConsoleColor color);
+        bool AskYesNoQuestions(string Question);
 
 
     }

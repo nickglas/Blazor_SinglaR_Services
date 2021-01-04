@@ -8,6 +8,31 @@ namespace Blazor_SignalR_Test.Server.Services.Helpers
 {
     public class UtilityService : IUtilityService
     {
+        public bool AskYesNoQuestions(string Question)
+        {
+            Console.Write(Question += " (Y/N) ");
+            while (true)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                ConsoleKey key = Console.ReadKey().Key;
+                Console.ResetColor();
+                if (key == ConsoleKey.Y)
+                {
+                    Console.WriteLine();
+                    return true;
+                }
+                else if (key == ConsoleKey.N)
+                {
+                    Console.WriteLine();
+                    return false;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input!");
+                }
+            }
+        }
+
         public void PrintText(string text)
         {
             Console.WriteLine(text);

@@ -144,54 +144,51 @@ namespace Blazor_SignalR_Test.Server.Services.Helpers
 
         public async Task InitializeDefaultCoinsAsync()
         {
-            utilityService.PrintText("Getting coins from external api");
-            List<Coin> Coins = new List<Coin>();
-            using (var client = new HttpClient())
+            if (utilityService.AskYesNoQuestions("Load coins from external api?"))
             {
-
-                client.BaseAddress = new Uri("https://api.coingecko.com/api/v3/coins/list");
-
-                // Add an Accept header for JSON format.
-                client.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
-
-                // List data response.
-                HttpResponseMessage response = client.GetAsync("").Result;  // Blocking call! Program will wait here until a response is received or a timeout occurs.
-                if (response.IsSuccessStatusCode)
+                List<Coin> Coins = new List<Coin>();
+                using (var client = new HttpClient())
                 {
-                    JArray Response = JArray.Parse(await response.Content.ReadAsStringAsync());
-                    foreach (var item in Response)
+
+                    client.BaseAddress = new Uri("https://api.coingecko.com/api/v3/coins/list");
+
+                    // Add an Accept header for JSON format.
+                    client.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    // List data response.
+                    HttpResponseMessage response = client.GetAsync("").Result;  // Blocking call! Program will wait here until a response is received or a timeout occurs.
+                    if (response.IsSuccessStatusCode)
                     {
-                        Coins.Add(JsonConvert.DeserializeObject<Coin>(item.ToString()));
+                        JArray Response = JArray.Parse(await response.Content.ReadAsStringAsync());
+                        foreach (var item in Response)
+                        {
+                            Coins.Add(JsonConvert.DeserializeObject<Coin>(item.ToString()));
+                        }
                     }
-                }
-                else
-                {
-                    
-                }
-
-            }
-
-            if (Coins.Count != 0)
-            {
-                int newCount = 0;
-                foreach (var c in Coins)
-                {
-                    if (AppContext.Coins.Where(x=>x.id == c.id).Count() == 0)
+                    else
                     {
-                        newCount++;
-                        await AppContext.Coins.AddAsync(c);
-                    }
-                }
-                await AppContext.SaveChangesAsync();
-                utilityService.PrintText($"Coins loaded sucessfully... got {newCount} new coins");
-            }
-        }
-    
 
-        public Task LoadAllCoinsAsync()
-        {
-            throw new NotImplementedException();
+                    }
+
+                }
+
+                if (Coins.Count != 0)
+                {
+                    int newCount = 0;
+                    foreach (var c in Coins)
+                    {
+                        if (AppContext.Coins.Where(x => x.id == c.id).Count() == 0)
+                        {
+                            newCount++;
+                            await AppContext.Coins.AddAsync(c);
+                        }
+                    }
+                    await AppContext.SaveChangesAsync();
+                    utilityService.PrintText($"Coins loaded sucessfully... got {newCount} new coins");
+                }
+            }
+            
         }
 
     }
