@@ -1,4 +1,5 @@
 ﻿using Blazor_SignalR_Test.Server.Data;
+using Blazor_SignalR_Test.Server.Models;
 using Blazor_SignalR_Test.Server.Services.Interfaces;
 using Blazor_SignalR_Test.Shared;
 using Microsoft.AspNetCore.Identity;
@@ -163,7 +164,16 @@ namespace Blazor_SignalR_Test.Server.Services.Helpers
                         JArray Response = JArray.Parse(await response.Content.ReadAsStringAsync());
                         foreach (var item in Response)
                         {
-                            Coins.Add(JsonConvert.DeserializeObject<Coin>(item.ToString()));
+                            Coin c = JsonConvert.DeserializeObject<Coin>(item.ToString());
+                            if (Enum.IsDefined(typeof(FavoriteSymbols),c.symbol))
+                            {
+                                c.favorite = true;
+                            }
+                            else
+                            {
+                                c.favorite = false;
+                            }
+                            Coins.Add(c);
                         }
                     }
                     else
