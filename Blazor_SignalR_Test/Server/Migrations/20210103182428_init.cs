@@ -53,15 +53,13 @@ namespace Blazor_SignalR_Test.Server.Migrations
                 name: "Coins",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    ProjectUrl = table.Column<string>(nullable: true)
+                    id = table.Column<string>(nullable: false),
+                    symbol = table.Column<string>(nullable: true),
+                    name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Coins", x => x.Id);
+                    table.PrimaryKey("PK_Coins", x => x.id);
                 });
 
             migrationBuilder.CreateTable(

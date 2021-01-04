@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blazor_SignalR_Test.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210102154116_init2")]
-    partial class init2
+    [Migration("20210103222930_fav")]
+    partial class fav
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -91,24 +91,19 @@ namespace Blazor_SignalR_Test.Server.Migrations
 
             modelBuilder.Entity("Blazor_SignalR_Test.Shared.Coin", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Description")
+                    b.Property<bool>("favorite")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("symbol")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProjectUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Symbol")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Coins");
                 });

@@ -3,6 +3,7 @@ using Blazor_SignalR_Test.Server.Services.Interfaces;
 using Blazor_SignalR_Test.Shared;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -144,7 +145,7 @@ namespace Blazor_SignalR_Test.Server.Services.Helpers
         public async Task InitializeDefaultCoinsAsync()
         {
             utilityService.PrintText("Getting coins from external api");
-            List<Coin> UpdatedList = new List<Coin>();
+            List<Coin> Coins = new List<Coin>();
             using (var client = new HttpClient())
             {
 
@@ -158,10 +159,11 @@ namespace Blazor_SignalR_Test.Server.Services.Helpers
                 HttpResponseMessage response = client.GetAsync("").Result;  // Blocking call! Program will wait here until a response is received or a timeout occurs.
                 if (response.IsSuccessStatusCode)
                 {
-                    string test = await response.Content.ReadAsStringAsync();
-                    dynamic stuff = JsonConvert.DeserializeObject(test);
-
-                        
+                    JArray Response = JArray.Parse(await response.Content.ReadAsStringAsync());
+                    foreach (var item in Response)
+                    {
+                        Coins.Add(JsonConvert.DeserializeObject<Coin>(item.ToString()));
+                    }
                 }
                 else
                 {
@@ -169,7 +171,23 @@ namespace Blazor_SignalR_Test.Server.Services.Helpers
                 }
 
             }
+
+            if (Coins.Count != 0)
+            {
+                int newCount = 0;
+                foreach (var c in Coins)
+                {
+                    if (AppContext.Coins.Where(x=>x.id == c.id).Count() == 0)
+                    {
+                        newCount++;
+                        await AppContext.Coins.AddAsync(c);
+                    }
+                }
+                await AppContext.SaveChangesAsync();
+                utilityService.PrintText($"Coins loaded sucessfully... got {newCount} new coins");
+            }
         }
+    
 
         public Task LoadAllCoinsAsync()
         {

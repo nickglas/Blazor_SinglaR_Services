@@ -6,11 +6,10 @@ namespace Blazor_SignalR_Test.Shared
 {
     public class Coin
     {
-        public int id { get; set; }
+        public string id { get; set; }
         public string symbol { get; set; }
         public string name { get; set; }
-        public string Description { get; set; }
-        public string ProjectUrl { get; set; }
+        public bool favorite { get; set; }
 
         public static List<Coin> GetDefaultCoins()
         {
@@ -19,9 +18,7 @@ namespace Blazor_SignalR_Test.Shared
                 new Coin()
                 {
                     symbol = "BTC",
-                    name = "Bitcoin",
-                    Description = "Bitcoin coin",
-                    ProjectUrl = "https://bitcoin.org/nl/"
+                    name = "Bitcoin"
                 }
             };
         }

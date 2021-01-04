@@ -2,20 +2,21 @@
 
 namespace Blazor_SignalR_Test.Server.Migrations
 {
-    public partial class init2 : Migration
+    public partial class fav : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Symbol",
+            migrationBuilder.AddColumn<bool>(
+                name: "favorite",
                 table: "Coins",
-                nullable: true);
+                nullable: false,
+                defaultValue: false);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Symbol",
+                name: "favorite",
                 table: "Coins");
         }
     }
